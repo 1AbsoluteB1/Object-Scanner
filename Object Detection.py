@@ -1,49 +1,38 @@
+#Library Import
 import cv2
+import numpy as np
+#Reading File
+def Object(image_name):
+    image = cv2.imread(image_name)
+    #Filter Application
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) #Greyscale Conversion
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0) #White Noise Reduction
+    edges = cv2.Canny(blurred, 75, 225) #Edge Detection using Canny
+    cv2.imshow("image",edges) #Displays Canny Image
+    #Edge Detection
+    contours, _ = cv2.findContours(edges, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+    # Initialize variables to keep track of the smallest and largest coordinates
+    min_x = np.inf
+    max_x = 0
+    min_y = np.inf
+    max_y = 0
 
-# Load the image
-image = cv2.imread('Photo_H.jpg')
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) #Converting to Greyscale
+    # Iterate through contours
+    for contour in contours:
+        x, y, w, h = cv2.boundingRect(contour)
+        # Update smallest and largest coordinates
+        min_x = min(min_x, x)
+        max_x = max(max_x, x+w)
+        min_y = min(min_y, y)
+        max_y = max(max_y, y+h)
 
-# Apply Gaussian blur to reduce noise
-blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-
-# Apply adaptive thresholding to segment shadows
-thresh = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 11, 10)
-cv2.imshow('thresh',thresh)
-
-# Find contours
-contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-max_height = 0
-max_area = 0
-max_width = 0
-max_x = 0
-max_y = 0
-
-# Iterate through contours
-for contour in contours:
-    x, y, w, h = cv2.boundingRect(contour)
-    area = w * h
-    
-    # Filter out contours with small area
-    if area < 1:
-        continue
-    
-    # Update maximum width, height, and area
-    if area > max_area:
-        max_width = w
-        max_height = h
-        max_area = area
-        max_x = x
-        max_y = y
-
-# Draw the bounding rectangle excluding shadows
-cv2.rectangle(image, (max_x, max_y), (max_x + max_width, max_y + max_height), (0, 255, 0), 2)
-
-# Put text for width and height
-cv2.putText(image, f'Width: {max_width}, Height: {max_height}', (max_x, max_y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-
-# Display the image
-cv2.imshow('Image', image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+    # Draw rectangle along smallest and largest coordinates
+    cv2.rectangle(image, (min_x, min_y), (max_x, max_y), (0, 255, 0), 2)
+    cv2.putText(image, f'Width: {max_x-min_x}, Height: {max_y-min_y}', (min_x, min_y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+    print(w,h)
+    #Display
+    cv2.imshow('Image', image)
+    cv2.waitKey(0)
+    if ord("q"):
+        cv2.destroyAllWindows()
+    return w,h,min_y
