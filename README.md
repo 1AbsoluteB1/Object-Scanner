@@ -37,4 +37,20 @@ The provided Python code utilizes OpenCV to perform object detection and measure
   - Draws a rectangle around the object and labels it with its width and height using `cv2.rectangle()` and `cv2.putText()` respectively.
   - Displays the processed image using `cv2.imshow()` and waits for user input with `cv2.waitKey()`.
   - Closes all windows using `cv2.destroyAllWindows()` when the user presses the 'q' key.
+# Linear Regression
+
+The provided Python code demonstrates the implementation of a simple linear regression model using the Scikit-Learn library to predict the dependent variable based on given independent variables. Below is a breakdown of the key functionalities:
+
+## Data Import and Preprocessing
+- The code first imports necessary libraries, including NumPy, Pandas, and the modules for linear regression modeling from Scikit-Learn.
+- It defines the `Line()` function, which encompasses the steps for building and analyzing the linear regression model.
+
+## Linear Regression Model Building
+- **Data Loading**: Reads the dataset from an Excel file using Pandas' `read_excel()` function.
+- **Defining Variables**: Specifies the independent variables (`X`) and the dependent variable (`Y`) from the dataset.
+- **Model Initialization**: Creates an instance of the linear regression model using `LinearRegression()`.
+- **Model Training**: Fits the linear regression model with the provided independent and dependent variables using the `fit()` method.
+- **Coefficient and Intercept Extraction**: Retrieves the coefficients and intercept of the trained linear regression model.
+- **Return Values**: The function returns the coefficients and intercept.
+
 
